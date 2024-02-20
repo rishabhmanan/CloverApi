@@ -1,33 +1,39 @@
 class OAuthController < ApplicationController
   def initialize
-    @oauth_client = OAuth2::Client.new(Rails.configuration.x.oauth.client_id,
-                                       Rails.configuration.x.oauth.client_secret,
-                                       authorize_url: '/oauth2/authorize',
-                                       site: Rails.configuration.x.oauth.idp_url,
-                                       token_url: '/oauth2/token',
-                                       redirect_uri: Rails.configuration.x.oauth.redirect_uri)
+    super
+    @oauth_client = OAuth2::Client.new(
+      Rails.configuration.x.oauth.client_id,
+      Rails.configuration.x.oauth.client_secret,
+      site: 'https://sandbox.dev.clover.com',
+      authorize_url: '/oauth/authorize',
+      token_url: '/oauth/token',
+      redirect_uri: "http://localhost:3000/oauth_callback"
+    )
   end
 
   def oauth_callback
-    response = @oauth_client.auth_code.get_token(params[:code])
+    response = @oauth_client.auth_code.get_token(params[:code], {
+      client_id: Rails.configuration.x.oauth.client_id,
+      client_secret: Rails.configuration.x.oauth.client_secret
+    })
 
-    token = response.to_hash[:access_token]
+    token = response.token
 
     begin
       decoded = TokenDecoder.new(token, @oauth_client.id).decode
     rescue Exception => error
-      "An unexpected exception occurred: #{error.inspect}"
+      logger.error "An unexpected exception occurred: #{error.inspect}"
       head :forbidden
       return
     end
 
-    session[:user_jwt] = {value: decoded, httponly: true}
+    session[:user_jwt] = { value: decoded, httponly: true }
 
     redirect_to root_path
   end
 
   def logout
-    @oauth_client.request(:get, 'oauth2/logout')
+    @oauth_client.request(:get, '/oauth/authorize', params: { action: 'logout' })
 
     reset_session
 
@@ -35,6 +41,10 @@ class OAuthController < ApplicationController
   end
 
   def login
-    redirect_to @oauth_client.auth_code.authorize_url
+    redirect_to @oauth_client.auth_code.authorize_url(scope: 'read_write'), allow_other_host: true
+  end
+
+  def authorize
+    redirect_to @oauth_client.auth_code.authorize_url(scope: 'read_write'), allow_other_host: true
   end
 end

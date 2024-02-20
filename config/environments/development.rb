@@ -8,8 +8,8 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.enable_reloading = true
 
-  config.x.oauth.client_id = "USERID"
-  config.x.oauth.client_secret = "SECRET"
+  # config.x.oauth.client_id = "M2WQAHDKK08K4"
+  # config.x.oauth.client_secret = "690d6f02-ae77-4a44-7b8d-bc70e693fa45"
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -77,3 +77,6 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 end
+
+Rails.configuration.x.oauth.client_id = "M2WQAHDKK08K4"
+Rails.configuration.x.oauth.client_secret = "690d6f02-ae77-4a44-7b8d-bc70e693fa45"
