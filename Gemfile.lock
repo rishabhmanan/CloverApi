@@ -305,6 +305,7 @@ DEPENDENCIES
   dotenv-rails
   importmap-rails
   jbuilder
+  jwt
   omniauth
   omniauth-clover
   puma (>= 5.0)
