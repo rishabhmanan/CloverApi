@@ -32,10 +32,12 @@ class TaxApi
     response = get_orders_in_period(start_time, end_time)
     total_taxes = 0
 
-    response['elements'].each do |order|
-      total_taxes += order['taxAmount'].to_f
+    if response && response['elements']
+      response['elements'].each do |order|
+        total_taxes += order['taxAmount'].to_f if order['taxAmount']
+      end
+    else
+      puts "No data available for processing"
     end
-
-    total_taxes
   end
 end

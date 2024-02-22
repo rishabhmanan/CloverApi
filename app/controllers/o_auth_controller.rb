@@ -12,24 +12,16 @@ class OAuthController < ApplicationController
   end
 
   def oauth_callback
+    puts "OAuth callback received with params: #{params.inspect}"
     response = @oauth_client.auth_code.get_token(params[:code], {
       client_id: Rails.configuration.x.oauth.client_id,
       client_secret: Rails.configuration.x.oauth.client_secret
     })
 
     token = response.token
+    session[:user_jwt] = { value: token, httponly: true }
 
-    begin
-      decoded = TokenDecoder.new(token, @oauth_client.id).decode
-    rescue Exception => error
-      logger.error "An unexpected exception occurred: #{error.inspect}"
-      head :forbidden
-      return
-    end
-
-    session[:user_jwt] = { value: decoded, httponly: true }
-
-    redirect_to root_path
+    redirect_to api_path
   end
 
   def logout

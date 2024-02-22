@@ -36,9 +36,13 @@ class PaymentAndFeesApi
     response = get_payments_in_period(start_time, end_time)
     revenue_per_processor = Hash.new(0)
 
-    response['elements'].each do |payment|
-      processor = payment['tender']['label']
-      revenue_per_processor[processor] += payment['amount']
+    if response && response['elements']
+      response['elements'].each do |payment|
+        processor = payment['tender']['label']
+        revenue_per_processor[processor] += payment['amount']
+      end
+    else
+      puts "No data available for processing"
     end
 
     revenue_per_processor
@@ -48,16 +52,18 @@ class PaymentAndFeesApi
     response = get_payments_in_period(start_time, end_time)
     fees_per_processor = Hash.new(0)
 
-    response['elements'].each do |payment|
-      processor = payment['tender']['label']
-      fee_rate = @fee_rates[processor]
-      if fee_rate
-        fees_per_processor[processor] += payment['amount'] * fee_rate
-      else
-        puts "No fee rate defined for payment processor: #{processor}"
+    if response && response['elements']
+      response['elements'].each do |payment|
+        processor = payment['tender']['label']
+        fee_rate = @fee_rates[processor]
+        if fee_rate
+          fees_per_processor[processor] += payment['amount'] * fee_rate
+        else
+          puts "No fee rate defined for payment processor: #{processor}"
+        end
       end
+    else
+      puts "No data available for processing"
     end
-
-    fees_per_processor
   end
 end

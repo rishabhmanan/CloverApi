@@ -1,72 +1,80 @@
-require 'net/http'
-require 'json'
-require 'date'
+require "net/http"
+require "json"
+
+BASE_URI = "https://api.clover.com/v3/merchants".freeze
 
 class RevenueApi
-  BASE_URL = 'https://api.clover.com/v3/merchants/'
-
-  def initialize(session)
-    @api_token = session[:api_token]
-    @merchant_id = session[:merchant_id]
+  def initialize(api_token, merchant_id)
+    @api_token = api_token
+    @merchant_id = merchant_id
+    @headers = {
+      'Authorization' => "Bearer #{@api_token}",
+      'Content-Type' => 'application/json'
+    }
   end
 
   def get_orders(start_time, end_time)
-    url = "#{BASE_URL}#{@merchant_id}/orders?createdTime=#{start_time}&createdTime=#{end_time}"
-    response = api_request(url)
+    puts "Fetching orders from #{@merchant_id} between #{start_time} and #{end_time}"
+    []
+  end
+
+  session = { api_token: '732ec82b-fc53-489d-0ca4-4bb73e1fa0d1', merchant_id: '34VTWYC23QZ01' }
+  revenue_api = RevenueApi.new(api_token: session[:api_token], merchant_id: session[:merchant_id])
+
+  def get_orders_in_period(start_time, end_time)
+    uri = URI("#{BASE_URI}/#{@merchant_id}/orders?filter=createdTime>=#{start_time}&filter=createdTime<=#{end_time}")
+    response = send_get_request(uri)
     JSON.parse(response.body)
   end
 
   def get_line_items(order_id)
-    url = "#{BASE_URL}#{@merchant_id}/orders/#{order_id}/line_items"
-    response = api_request(url)
+    uri = URI("#{BASE_URI}/#{@merchant_id}/orders/#{order_id}/line_items")
+    response = send_get_request(uri)
     JSON.parse(response.body)
   end
 
-  def get_item_name(item_id)
-    url = "#{BASE_URL}#{@merchant_id}/items/#{item_id}"
-    response = api_request(url)
-    JSON.parse(response.body)['name']
+  def get_item(item_id)
+    uri = URI("#{BASE_URI}/#{@merchant_id}/items/#{item_id}")
+    response = send_get_request(uri)
+    JSON.parse(response.body)
+  end
+
+  def calculate_revenue_per_product(start_time, end_time)
+    response = get_orders_in_period(start_time, end_time)
+    revenue_per_product = Hash.new(0)
+
+    if response && response["elements"]
+      response["elements"].each do |order|
+        line_items_response = get_line_items(order["id"])
+        if line_items_response && line_items_response["elements"]
+          line_items_response["elements"].each do |line_item|
+            item_response = get_item(line_item["item"]["id"])
+            if item_response && item_response["name"] && line_item["price"]
+              revenue_per_product[item_response["name"]] += line_item["price"].to_f
+            end
+          end
+        end
+      end
+    end
+
+    revenue_per_product
   end
 
   private
 
-  def api_request(url)
-    uri = URI(url)
+  def send_get_request(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Get.new(uri)
-    request['Authorization'] = "Bearer #{@api_token}"
+    @headers.each { |key, value| request[key] = value }
     http.request(request)
   end
 end
 
-def calculate_revenue_per_product(orders, api)
-  revenue_per_product = Hash.new(0)
-
-  orders.each do |order|
-    line_items = api.get_line_items(order['id'])
-    line_items.each do |line_item|
-      item_name = api.get_item_name(line_item['item']['id'])
-      revenue_per_product[item_name] += line_item['price'].to_f
-    end
-  end
-
-  revenue_per_product
-end
-
-session = {
-  api_token: '704d4b09-345e-4c35-9f86-7df0f8907d17',
-  merchant_id: '34VTWYC23QZ01'
-}
-
-start_time = DateTime.now.prev_day(7).strftime('%Y-%m-%dT00:00:00Z')
-end_time = DateTime.now.strftime('%Y-%m-%dT23:59:59Z')
-
-api = RevenueApi.new(session)
-orders = api.get_orders(start_time, end_time)
-revenue_per_product = calculate_revenue_per_product(orders, api)
-
-puts "Revenue per Product:"
-revenue_per_product.each do |product, revenue|
-  puts "#{product}: $#{revenue}"
-end
+api_token = "732ec82b-fc53-489d-0ca4-4bb73e1fa0d1"
+merchant_id = "34VTWYC23QZ01"
+revenue = RevenueApi.new(api_token, merchant_id)
+start_time = Time.new(2023, 1, 1).to_i * 1000
+end_time = Time.new(2023, 12, 31).to_i * 1000
+revenue_per_product = revenue.calculate_revenue_per_product(start_time, end_time)
+puts revenue_per_product

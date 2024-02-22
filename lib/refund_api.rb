@@ -32,14 +32,16 @@ class RefundApi
     response = get_orders_in_period(start_time, end_time)
     total_refunds = 0
 
-    response['elements'].each do |order|
-      next unless order['lineItems']
+    if response && response['elements']
+      response['elements'].each do |order|
+        next unless order['lineItems']
 
-      order['lineItems'].each do |item|
-        total_refunds += item['refunded'].to_f if item['refunded']
+        order['lineItems'].each do |item|
+          total_refunds += item['refunded'].to_f if item['refunded']
+        end
       end
+    else
+      puts "No data available for processing"
     end
-
-    total_refunds
   end
 end

@@ -31,11 +31,13 @@ class TipsApi
   def calculate_total_tips(start_time, end_time)
     response = get_payments_in_period(start_time, end_time)
     total_tips = 0
-
-    response['elements'].each do |payment|
-      total_tips += payment['tipAmount'].to_f if payment['tipAmount']
+    if response && response['elements']
+      response['elements'].each do |payment|
+        total_tips += payment['tipAmount'].to_f if payment['tipAmount']
+      end
+    else
+      puts "No data available for processing"
     end
 
-    total_tips
   end
 end
