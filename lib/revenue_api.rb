@@ -13,13 +13,10 @@ class RevenueApi
     }
   end
 
-  def get_orders(start_time, end_time)
-    puts "Fetching orders from #{@merchant_id} between #{start_time} and #{end_time}"
+  def get_orders(merchant_id, start_time, end_time)
+    puts "Fetching orders from #{merchant_id} between #{start_time} and #{end_time}"
     []
   end
-
-  session = { api_token: '732ec82b-fc53-489d-0ca4-4bb73e1fa0d1', merchant_id: '34VTWYC23QZ01' }
-  revenue_api = RevenueApi.new(api_token: session[:api_token], merchant_id: session[:merchant_id])
 
   def get_orders_in_period(start_time, end_time)
     uri = URI("#{BASE_URI}/#{@merchant_id}/orders?filter=createdTime>=#{start_time}&filter=createdTime<=#{end_time}")

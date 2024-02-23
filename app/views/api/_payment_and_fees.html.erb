@@ -1,0 +1,10 @@
+<% if payment_and_fees_api.present? %>
+  <h3>Fee Rates</h3>
+  <ul>
+    <% payment_and_fees_api.instance_variable_get(:@fee_rates).each do |card_type, rate| %>
+      <li><strong><%= card_type %>:</strong> <%= rate %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No payment and fees</p>
+<% end %>

@@ -1,20 +1,26 @@
-<thead>
-  <tr>
-    <th>Order ID</th>
-    <th>Discount Amount</th>
-  </tr>
-</thead>
-<tbody>
-  <% if @total_discounts.is_a?(Integer) %>
-    <tr>
-      <td colspan="2">No discounts available</td>
-    </tr>
-  <% else %>
-    <% @total_discounts.each do |order_id, discount_amount| %>
-      <tr>
-        <td><%= order_id %></td>
-        <td><%= discount_amount %></td>
-      </tr>
-    <% end %>
-  <% end %>
-</tbody>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h2>Payment and Fees</h2>
+      <%= render 'payment_and_fees', payment_and_fees_api: @payment_and_fees_api %>
+    </div>
+    <div class="col">
+      <h2>Discounts</h2>
+      <%= render 'discount', total_discounts: @total_discounts %>
+    </div>
+    <div class="col">
+      <h2>Tax</h2>
+      <%= render 'tax', total_taxes: @total_taxes %>
+    </div>
+    <div class="col">
+      <h2>Tips</h2>
+      <%= render 'tips', total_tips: @total_tips %>
+    </div>
+    <div class="col">
+      <h2>Refunds</h2>
+      <%= render 'refunds', total_refunds: @total_refunds %>
+    </div>
+  </div>
+</div>

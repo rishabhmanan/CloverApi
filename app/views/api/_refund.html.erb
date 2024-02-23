@@ -1,0 +1,20 @@
+<% if total_refunds.present? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Refund ID</th>
+        <th>Refund Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% total_refunds.each do |refund_id, refund_amount| %>
+        <tr>
+          <td><%= refund_id %></td>
+          <td><%= refund_amount %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No refunds</p>
+<% end %>
