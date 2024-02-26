@@ -1,0 +1,43 @@
+<html>
+  <body>
+    <h2>Line Items:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Order ID</th>
+          <th>Name</th>
+          <th>Alternate Name</th>
+          <th>Price</th>
+          <th>Note</th>
+          <th>Printed</th>
+          <th>Created Time</th>
+          <th>Order Client Created Time</th>
+          <th>Exchanged</th>
+          <th>Refunded</th>
+          <th>Is Revenue</th>
+          <th>Is Order Fee</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @line_items.each do |item| %>
+          <tr>
+            <td><%= item["id"] %></td>
+            <td><%= item["orderRef"]["id"] %></td>
+            <td><%= item["name"] %></td>
+            <td><%= item["alternateName"] %></td>
+            <td><%= item["price"] %></td>
+            <td><%= item["note"] %></td>
+            <td><%= item["printed"] %></td>
+            <td><%= Time.at(item["createdTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= Time.at(item["orderClientCreatedTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= item["exchanged"] %></td>
+            <td><%= item["refunded"] %></td>
+            <td><%= item["isRevenue"] %></td>
+            <td><%= item["isOrderFee"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>

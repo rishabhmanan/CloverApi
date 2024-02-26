@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 
 class DiscountApi
-  BASE_URI = 'https://api.clover.com/v3/merchants'.freeze
+  BASE_URI = 'https://sandbox.dev.clover.com/v3/merchants'.freeze
 
   def initialize(session)
     @access_token = session[:api_token]
@@ -32,20 +32,21 @@ class DiscountApi
     response = get_orders_in_period(start_time, end_time)
 
     if response && response['elements']
-      total_discounts = 0
+      total_discounts = []
 
       response['elements'].each do |order|
         next unless order['discounts']
 
         order['discounts'].each do |discount|
-          total_discounts += discount['amount'] if discount['amount']
+          total_discounts << discount if discount['amount']
         end
       end
 
       total_discounts
     else
       puts "API response is nil or does not contain 'elements'"
-      return 0
+      return []
     end
   end
+
 end

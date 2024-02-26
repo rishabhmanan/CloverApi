@@ -1,26 +1,38 @@
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <h2>Payment and Fees</h2>
-      <%= render 'payment_and_fees', payment_and_fees_api: @payment_and_fees_api %>
-    </div>
-    <div class="col">
-      <h2>Discounts</h2>
-      <%= render 'discount', total_discounts: @total_discounts %>
-    </div>
-    <div class="col">
-      <h2>Tax</h2>
-      <%= render 'tax', total_taxes: @total_taxes %>
-    </div>
-    <div class="col">
-      <h2>Tips</h2>
-      <%= render 'tips', total_tips: @total_tips %>
-    </div>
-    <div class="col">
-      <h2>Refunds</h2>
-      <%= render 'refunds', total_refunds: @total_refunds %>
-    </div>
-  </div>
-</div>
+<html>
+  <body>
+    <h2>Orders:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Currency</th>
+          <th>Employee ID</th>
+          <th>Payment State</th>
+          <th>Created Time</th>
+          <th>Modified Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order|%>
+          <tr>
+            <td><%= order["id"] %></td>
+            <td><%= order["currency"] %></td>
+            <td><%= order["employee"]["id"] %></td>
+            <td><%= order["paymentState"] %></td>
+            <td><%= Time.at(order["createdTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= Time.at(order["modifiedTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% @revenue_per_product.each do |product_name, revenue| %>
+      <p><%= product_name %>: <%= revenue %></p>
+    <% end %>
+    <%= render 'line_items', line_items: @line_items %>
+    <%= render 'discount', total_discounts: @total_discounts %>
+    <%= render 'tips', total_tips: @total_tips %>
+    <%= render 'tax', total_taxes: @total_taxes %>
+    <%= render 'refund', total_refunds: @total_refunds %>
+    <%= render 'payment_and_fees', payment_and_fees_api: @payment_and_fees_api %>
+  </body>
+</html>

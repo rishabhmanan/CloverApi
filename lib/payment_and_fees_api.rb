@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 
 class PaymentAndFeesApi
-  BASE_URI = 'https://api.clover.com/v3/merchants'.freeze
+  BASE_URI = 'https://sandbox.dev.clover.com/v3/merchants'.freeze
 
   def initialize(session)
     @access_token = session[:api_token]

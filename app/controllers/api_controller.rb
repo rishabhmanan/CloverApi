@@ -8,8 +8,8 @@ class ApiController < ApplicationController
     revenue_api = RevenueApi.new(session[:api_token], session[:merchant_id])
     @tax_api = TaxApi.new(session)
     @tips_api = TipsApi.new(session)
-    start_time = DateTime.now.prev_day(7).strftime('%Y-%m-%dT00:00:00Z')
-    end_time = DateTime.now.strftime('%Y-%m-%dT23:59:59Z')
+    start_time = DateTime.now.prev_day(7)
+    end_time = DateTime.now
 
     @revenue_per_processor = @payment_and_fees_api.calculate_revenue_per_processor(start_time, end_time)
     @processor_fees = @payment_and_fees_api.calculate_processor_fees(start_time, end_time)
@@ -17,7 +17,8 @@ class ApiController < ApplicationController
     @total_refunds = @refund_api.calculate_total_refunds(start_time, end_time)
     @total_taxes = @tax_api.calculate_total_taxes(start_time, end_time)
     @total_tips = @tips_api.calculate_total_tips(start_time, end_time)
-    orders = revenue_api.get_orders(session[:merchant_id], start_time, end_time)
+    @orders = revenue_api.get_orders_in_period(start_time, end_time)["elements"]
+    @line_items = revenue_api.get_line_items_for_orders(@orders)
     @revenue_per_product = revenue_api.calculate_revenue_per_product(start_time, end_time)
 
     if [@revenue_per_processor, @processor_fees, @total_discounts, @total_refunds, @total_taxes, @total_tips, @revenue_per_product].any?(&:nil?)
