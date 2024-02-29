@@ -14,30 +14,36 @@ class TaxApi
     }
   end
 
-  def get_orders_in_period(start_time, end_time)
-    uri = URI("#{BASE_URI}/#{@merchant_id}/orders")
-    uri.query = URI.encode_www_form(filter: "createdTime>=#{start_time}&createdTime<=#{end_time}")
-
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-
-    request = Net::HTTP::Get.new(uri.request_uri)
-    @headers.each { |key, value| request[key] = value }
-
-    response = http.request(request)
-    JSON.parse(response.body)
+  def get_tax_rates(start_time, end_time)
+    start_time_ms = start_time.to_i * 1000
+    end_time_ms = end_time.to_i * 1000
+    uri = URI("#{BASE_URI}/#{@merchant_id}/tax_rates")
+    response = send_get_request(uri)
+    return JSON.parse(response.body)["elements"] || []
   end
 
   def calculate_total_taxes(start_time, end_time)
-    response = get_orders_in_period(start_time, end_time)
+    response = get_tax_rates(start_time, end_time)
     total_taxes = 0
 
-    if response && response['elements']
-      response['elements'].each do |order|
-        total_taxes += order['taxAmount'].to_f if order['taxAmount']
+    if response
+      response.each do |tax|
+        total_taxes += tax['rate'].to_f if tax['rate']
       end
     else
-      puts "No data available for processing"
+      puts "No Tax Rates"
     end
   end
+
+  private
+
+  def send_get_request(uri)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(uri)
+    @headers.each { |key, value| request[key] = value }
+    response = http.request(request)
+    response
+  end
+
 end

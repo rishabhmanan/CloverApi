@@ -25,14 +25,38 @@
         <% end %>
       </tbody>
     </table>
-    <% @revenue_per_product.each do |product_name, revenue| %>
-      <p><%= product_name %>: <%= revenue %></p>
+    <h2>Revenue:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @revenue_per_product.each do |product, revenue| %>
+          <tr>
+            <td><%= product %></td>
+            <td><%= sprintf("%.2f", revenue) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @revenue_per_processor.present? %>
+      <p>Total Revenue Per Processor: <%= @revenue_per_processor %></p>
+    <% else %>
+      <p>No Revenue Per Processor</p>
     <% end %>
+    <br>
     <%= render 'line_items', line_items: @line_items %>
+    <br>
     <%= render 'discount', total_discounts: @total_discounts %>
+    <br>
     <%= render 'tips', total_tips: @total_tips %>
+    <br>
     <%= render 'tax', total_taxes: @total_taxes %>
-    <%= render 'refund', total_refunds: @total_refunds %>
+    <br>
+    <%#= render 'refund', total_refunds: @total_refunds %>
     <%= render 'payment_and_fees', payment_and_fees_api: @payment_and_fees_api %>
   </body>
 </html>

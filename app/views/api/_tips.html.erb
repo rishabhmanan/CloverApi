@@ -1,5 +1,25 @@
-<% if total_tips.present? %>
-  <p>Total Tips: <%= total_tips %></p>
-<% else %>
-  <p>No Tips</p>
-<% end %>
+<html>
+  <body>
+    <h2>Tip Suggestions:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tip ID</th>
+          <th>Tip Name</th>
+          <th>Percentage</th>
+          <th>Flat Tip</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @total_tips.each do |tip|%>
+          <tr>
+            <td><%= tip["id"] %></td>
+            <td><%= tip["name"] %></td>
+            <td><%= tip["percentage"] %></td>
+            <td><%= tip["flatTip"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+</html>

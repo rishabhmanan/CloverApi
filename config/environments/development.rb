@@ -78,5 +78,5 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 end
 
-Rails.configuration.x.oauth.client_id = "M2WQAHDKK08K4"
-Rails.configuration.x.oauth.client_secret = "690d6f02-ae77-4a44-7b8d-bc70e693fa45"
+Rails.configuration.x.oauth.client_id = "3NTJS3WVQD1AR"
+Rails.configuration.x.oauth.client_secret = "16b1011b-d802-3f51-c4a7-4ceb718f4379"

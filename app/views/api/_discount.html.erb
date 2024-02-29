@@ -1,20 +1,30 @@
-<% if @total_discounts.present? %>
-  <table>
-    <thead>
-      <tr>
-        <th>Order ID</th>
-        <th>Discount Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @total_discounts.each do |order_id, discount_amount| %>
+<html>
+<head>
+  <title>Discounts</title>
+</head>
+<body>
+  <% if @total_discounts.any? %>
+    <h2>Discounts:</h2>
+    <table>
+      <thead>
         <tr>
-          <td><%= order_id %></td>
-          <td><%= discount_amount %></td>
+          <th>Discount ID</th>
+          <th>Name</th>
+          <th>Percentage</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>No discounts available</p>
-<% end %>
+      </thead>
+      <tbody>
+        <% @total_discounts.each do |discount| %>
+          <tr>
+            <td><%= discount["id"] %></td>
+            <td><%= discount["name"] %></td>
+            <td><%= discount["percentage"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No discounts</p>
+  <% end %>
+</body>
+</html>
