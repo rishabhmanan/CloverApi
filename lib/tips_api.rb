@@ -15,11 +15,12 @@ class TipsApi
   end
 
   def get_tips(start_time, end_time)
-    start_time_ms = start_time.to_i * 1000
-    end_time_ms = end_time.to_i * 1000
     uri = URI("#{BASE_URI}/#{@merchant_id}/tip_suggestions")
     response = send_get_request(uri)
-    return JSON.parse(response.body)["elements"] || []
+    JSON.parse(response.body)["elements"] || []
+  rescue StandardError => e
+    puts "Error occurred while fetching tips: #{e.message}"
+    []
   end
 
   def calculate_total_tips(start_time, end_time)
@@ -33,7 +34,6 @@ class TipsApi
       puts "No data available for processing"
     end
   end
-
   private
 
   def send_get_request(uri)
@@ -42,6 +42,21 @@ class TipsApi
     request = Net::HTTP::Get.new(uri)
     @headers.each { |key, value| request[key] = value }
     response = http.request(request)
-    response
+    handle_response(response)
+  rescue StandardError => e
+    puts "Error occurred while sending HTTP request: #{e.message}"
+    raise
+  end
+
+  def handle_response(response)
+    case response
+    when Net::HTTPSuccess
+      response
+    else
+      raise "Request failed with status code: #{response.code}"
+    end
+  rescue StandardError => e
+    puts "Error occurred while handling response: #{e.message}"
+    raise
   end
 end

@@ -1,4 +1,4 @@
-<% if total_refunds.present? %>
+<% if total_refunds.is_a?(Hash) && total_refunds.present? %>
   <table class="table">
     <thead>
       <tr>
@@ -15,6 +15,8 @@
       <% end %>
     </tbody>
   </table>
-<% else %>
+<% elsif total_refunds == 0 %>
   <p>No refunds</p>
+<% else %>
+  <p>Error: Unable to retrieve refund data</p>
 <% end %>

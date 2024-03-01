@@ -19,19 +19,16 @@ class DiscountApi
     end_time_ms = end_time.to_i * 1000
     uri = URI("#{BASE_URI}/#{@merchant_id}/discounts")
     response = send_get_request(uri)
-    return JSON.parse(response.body)["elements"] || []
+    JSON.parse(response.body)["elements"] || []
+  rescue StandardError => e
+    puts "Error occurred while fetching discounts: #{e.message}"
+    []
   end
 
   def calculate_total_discounts(start_time, end_time)
     response = get_discount(start_time, end_time)
-    total_discounts = []
-    if response
-      response.each do |discount|
-        total_discounts << discount if discount['percentage']
-      end
-    else
-      puts "No Discount"
-    end
+    total_discounts = response.select { |discount| discount['percentage'] }
+    total_discounts.empty? ? nil : total_discounts
   end
 
   private
@@ -42,7 +39,15 @@ class DiscountApi
     request = Net::HTTP::Get.new(uri)
     @headers.each { |key, value| request[key] = value }
     response = http.request(request)
-    response
+    handle_response(response)
   end
 
+  def handle_response(response)
+    case response
+    when Net::HTTPSuccess
+      response
+    else
+      raise "Request failed with status code: #{response.code}"
+    end
+  end
 end

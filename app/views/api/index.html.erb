@@ -4,8 +4,10 @@
     <table>
       <thead>
         <tr>
+          <th>Order Name</th>
           <th>Order ID</th>
           <th>Currency</th>
+          <th>Amount</th>
           <th>Employee ID</th>
           <th>Payment State</th>
           <th>Created Time</th>
@@ -15,8 +17,10 @@
       <tbody>
         <% @orders.each do |order|%>
           <tr>
+            <td><%= order["title"] %></td>
             <td><%= order["id"] %></td>
             <td><%= order["currency"] %></td>
+            <td><%= order["total"] %></td>
             <td><%= order["employee"]["id"] %></td>
             <td><%= order["paymentState"] %></td>
             <td><%= Time.at(order["createdTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
@@ -25,7 +29,7 @@
         <% end %>
       </tbody>
     </table>
-    <h2>Revenue:</h2>
+    <h2>Revenue Per Product:</h2>
     <table>
       <thead>
         <tr>
@@ -56,7 +60,8 @@
     <br>
     <%= render 'tax', total_taxes: @total_taxes %>
     <br>
-    <%#= render 'refund', total_refunds: @total_refunds %>
+    <%= render 'refund', total_refunds: @total_refunds %>
+    <br>
     <%= render 'payment_and_fees', payment_and_fees_api: @payment_and_fees_api %>
   </body>
 </html>

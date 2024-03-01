@@ -1,20 +1,24 @@
 <% if @processor_fees.present? %>
   <table>
-    <thead>
-      <tr>
-        <th>Processor</th>
-        <th>Total Fee</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @processor_fees.each do |processor, fee| %>
+    <body>
+      <h2>Fee Per Processor</h2>
+      <thead>
         <tr>
-          <td><%= processor %></td>
-          <td><%= fee %></td>
+          <th>Processor</th>
+          <th>Total Fee</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>No Fee Per Processor</p>
-<% end %>
+      </thead>
+      <tbody>
+        <% @processor_fees.each do |processor, fee| %>
+          <tr>
+            <td><%= processor %></td>
+            <td><%= fee %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No Fee Per Processor</p>
+  <% end %>
+</body>
+</html>

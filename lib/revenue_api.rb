@@ -89,9 +89,8 @@ class RevenueApi
   end
 end
 
-api_token = "488e54cc-bd1f-b963-bfa7-6f732eb06c62"
-merchant_id = "HT2V6ZWJEMHQ1"
+api_token = ENV['APP_TOKEN']
+merchant_id = ENV['MERCHANT_ID']
 revenue = RevenueApi.new(api_token, merchant_id)
 start_time = Time.new(2023, 1, 1)
 end_time = Time.new(2023, 12, 31)
-# revenue_per_product = revenue.calculate_revenue_per_product(start_time, end_time)

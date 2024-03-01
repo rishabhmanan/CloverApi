@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   get '/login', to: 'o_auth#login'
   get '/oauth/authorize', to: 'o_auth#authorize'
   get '/auth/:provider/callback', to: 'sessions#create'
-  # get '/oauth/callback', to: 'o_auth#oauth_callback'
   get 'api', to: 'api#index'
 
 end

@@ -43,7 +43,6 @@ class PaymentAndFeesApi
 
   end
 
-
   def calculate_revenue_per_processor(start_time_ms, end_time_ms)
     response = get_payments_in_period(start_time_ms, end_time_ms)
     revenue_per_processor = Hash.new(0)
