@@ -3,8 +3,8 @@ class ApiController < ApplicationController
     session = { api_token: ENV['API_TOKEN'], merchant_id: ENV['MERCHANT_ID'] }
     initialize_apis(session)
 
-    start_time = DateTime.now.prev_day(7)
-    end_time = DateTime.now
+    start_time = params[:start_date] ? DateTime.parse(params[:start_date]) : DateTime.now.prev_day(7)
+    end_time = params[:end_date] ? DateTime.parse(params[:end_date]) : DateTime.now
 
     @revenue_per_processor = @payment_and_fees_api.calculate_revenue_per_processor(start_time, end_time)
     @processor_fees = @payment_and_fees_api.calculate_processor_fees(start_time, end_time)

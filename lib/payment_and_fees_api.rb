@@ -23,10 +23,10 @@ class PaymentAndFeesApi
 
   def get_payments_in_period(start_time, end_time)
     uri = URI("#{BASE_URI}/#{@merchant_id}/payments")
-    start_time_ms = (start_time.utc.to_i * 1000).to_s
-    end_time_ms = (end_time.utc.to_i * 1000).to_s
+    start_time_ms = (start_time.to_i * 1000).to_s
+    end_time_ms = (end_time.to_i * 1000).to_s
 
-    uri.query = URI.encode_www_form(filter: "createdTime>=#{start_time_ms}", filter:"createdTime<=#{end_time_ms}")
+    uri.query = URI.encode_www_form(filter: "createdTime>=#{start_time_ms}", filter: "createdTime<=#{end_time_ms}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
 
@@ -35,12 +35,11 @@ class PaymentAndFeesApi
 
     response = http.request(request)
 
-    if (response.code == "200")
-      return JSON.parse(response.body)
+    if response.code == "200"
+      JSON.parse(response.body)
     else
-      return {}
+      {}
     end
-
   end
 
   def calculate_revenue_per_processor(start_time_ms, end_time_ms)

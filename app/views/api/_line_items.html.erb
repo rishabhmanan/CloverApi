@@ -29,8 +29,8 @@
             <td><%= item["price"] %></td>
             <td><%= item["note"] %></td>
             <td><%= item["printed"] %></td>
-            <td><%= Time.at(item["createdTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
-            <td><%= Time.at(item["orderClientCreatedTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= Time.at(item["createdTime"]/1000).strftime("%d/%m/%Y") %></td>
+            <td><%= Time.at(item["orderClientCreatedTime"]/1000).strftime("%d/%m/%Y") %></td>
             <td><%= item["exchanged"] %></td>
             <td><%= item["refunded"] %></td>
             <td><%= item["isRevenue"] %></td>

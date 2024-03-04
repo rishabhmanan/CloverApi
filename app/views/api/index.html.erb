@@ -1,4 +1,11 @@
 <html>
+  <%= form_tag(api_path, method: :get) do %>
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date">
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date">
+    <input type="submit" value="Fetch Data">
+  <% end %>
   <body>
     <h2>Orders:</h2>
     <table>
@@ -23,8 +30,8 @@
             <td><%= order["total"] %></td>
             <td><%= order["employee"]["id"] %></td>
             <td><%= order["paymentState"] %></td>
-            <td><%= Time.at(order["createdTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
-            <td><%= Time.at(order["modifiedTime"]/1000).strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= Time.at(order["createdTime"]/1000).strftime("%d/%m/%Y") %></td>
+            <td><%= Time.at(order["modifiedTime"]/1000).strftime("%d/%m/%Y") %></td>
           </tr>
         <% end %>
       </tbody>
