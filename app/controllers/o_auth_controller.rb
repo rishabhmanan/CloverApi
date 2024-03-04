@@ -12,7 +12,6 @@ class OAuthController < ApplicationController
   end
 
   def oauth_callback
-    puts "OAuth callback received with params: #{params.inspect}"
     response = @oauth_client.auth_code.get_token(params[:code], {
       client_id: Rails.configuration.x.oauth.client_id,
       client_secret: Rails.configuration.x.oauth.client_secret

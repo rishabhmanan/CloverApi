@@ -48,7 +48,7 @@ class PaymentAndFeesApi
 
     if response && response['elements']
       response['elements'].each do |payment|
-        processor = payment['tender']['label']
+        processor = payment['tender']['id']
         revenue_per_processor[processor] += payment['amount']
       end
     else
